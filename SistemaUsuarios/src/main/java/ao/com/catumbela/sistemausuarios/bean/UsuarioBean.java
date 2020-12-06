@@ -31,11 +31,12 @@ public class UsuarioBean implements Serializable {
 		try {
 			
 			cargoDAO = new CargoDAO();
-			cargos = cargoDAO.listar();
+			
 			
 			UsuarioDAO usuarioDAO = new UsuarioDAO();
 			
 			usuario = new Usuario();
+			cargos = cargoDAO.listar();
 			usuarios = usuarioDAO.listar();
 			
 		} catch (Exception erro) {
@@ -46,10 +47,13 @@ public class UsuarioBean implements Serializable {
 	
 	public void salvar() {
 		try {
-			cargoDAO = new CargoDAO();
+		
 			UsuarioDAO usuarioDAO= new UsuarioDAO();
-			usuarioDAO.salvar(usuario);
-			usuario = new Usuario();
+			usuarioDAO.merge(usuario);
+			
+			//usuario = new Usuario();
+			
+			cargoDAO = new CargoDAO();
 			usuarios = usuarioDAO.listar();
 			cargos = cargoDAO.listar();
 			

@@ -55,6 +55,17 @@ public class UsuarioDAO {
 		transacao.commit();
 		sessao.close();
 	}
+	
+	public void merge(Usuario usuario) {
+		EntityManager sessao = JPAUtil.getEntityManager();
+		EntityTransaction transacao = sessao.getTransaction();
+		transacao.begin();
+		sessao.merge(usuario);
+		transacao.commit();
+		sessao.close();
+
+	}
+
 
 
 }

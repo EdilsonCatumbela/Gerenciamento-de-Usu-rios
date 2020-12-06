@@ -9,13 +9,15 @@
 	<title>Usuários</title>
 </h:head>
 <h:body>
-	<h:form>
+<p:growl id="mensagem"/>
+	<h:form id="formListagem">
 		<p:panel header="Usuários - Listagem">
 			<p:dataTable emptyMessage="Nenhum registro encontrado."
 				paginator="true" value="#{usuarioBean.usuarios}" var="cursor"
 				rows="8">
 				<f:facet name="header">
-					<p:commandButton value="Novo" oncomplete="PF('dialogo').show();" />
+					<p:commandButton value="Novo" oncomplete="PF('dialogo').show();" 
+					update="mensagem formCadastro"/>
 				</f:facet>
 
 				<p:column headerText="Nome" filterBy="#{cursor.nome}" sortBy="#{cursor.nome}">
@@ -47,9 +49,9 @@
 	</h:form>
 
 	<p:dialog header="Usuários - Cadastro" widgetVar="dialogo"
-		draggable="false" resizable="false" modal="true" closable="false">
-		<h:form>
-			<h:panelGrid>
+		draggable="false" resizable="false" modal="true">
+		<h:form id="formCadastro">
+			<h:panelGrid id="painel">
 				<p:outputLabel value="Nome" />
 				<p:inputText maxlength="50" size="30" value="#{usuarioBean.usuario.nome}" 
 				required="true" requiredMessage="O campo nome é obrigatório" />
@@ -67,7 +69,7 @@
 
 				<p:outputLabel value="Cargo:" />
 				<p:selectOneMenu filter="true" required="true" requiredMessage="O campo cargo é obrigatório"
-				value="#{usuarioBean.usuario.cargo}">
+				value="#{usuarioBean.usuario.cargo}" converter="omnifaces.SelectItemsConverter">
 					<f:selectItem itemValue="" itemLabel="Selecione um cargo" />
 					<f:selectItems value="#{usuarioBean.cargos}" var="cargoCursor"
 					itemLabel="#{cargoCursor.nomeCargo}"/>
@@ -76,7 +78,8 @@
 			</h:panelGrid>
 
 			<h:panelGrid columns="2">
-				<p:commandButton value="Salvar" actionListener="#{usuarioBean.salvar()}" />
+				<p:commandButton value="Salvar" actionListener="#{usuarioBean.salvar()}" 
+				update="mensagem formCadastro:painel"/>
 				<p:commandButton value="Fechar" oncomplete="PF('dialogo').hide();" />
 			</h:panelGrid>
 		</h:form>

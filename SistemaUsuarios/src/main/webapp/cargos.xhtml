@@ -19,7 +19,7 @@
 				<f:facet name="header">
 					<p:commandButton value="Novo" oncomplete="PF('dialogo').show();"
 						actionListener="#{cargoBean.novo()}"
-						update="mensagem fromCadastro" />
+						update="mensagem fromCadastro:painel " />
 				</f:facet>
 				<p:column headerText="Nome" sortBy="#{cursor.nomeCargo}" filterBy="#{cursor.nomeCargo}">
 					#{cursor.nomeCargo}
