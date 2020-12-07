@@ -3,24 +3,28 @@
 <html xmlns="http://www.w3.org/1999/xhtml"
 	xmlns:h="http://xmlns.jcp.org/jsf/html"
 	xmlns:f="http://xmlns.jcp.org/jsf/core"
-	xmlns:p="http://primefaces.org/ui">
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:ui="http://xmlns.jcp.org/jsf/facelets">
 <h:head>
 	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
 	<title>Usuários</title>
 </h:head>
 <h:body>
-<p:growl id="mensagem"/>
+	<ui:include src="/menu.xhtml" />
+	<p:growl id="mensagem" />
 	<h:form id="formListagem">
 		<p:panel header="Usuários - Listagem">
-			<p:dataTable emptyMessage="Nenhum registro encontrado."
+			<p:dataTable id="tabela" emptyMessage="Nenhum registro encontrado."
 				paginator="true" value="#{usuarioBean.usuarios}" var="cursor"
 				rows="8">
 				<f:facet name="header">
-					<p:commandButton value="Novo" oncomplete="PF('dialogo').show();" 
-					update="mensagem formCadastro"/>
+					<p:commandButton value="Novo" oncomplete="PF('dialogo').show();"
+						actionListener="#{usuarioBean.novo()}"
+						update="mensagem formCadastro:painel" />
 				</f:facet>
 
-				<p:column headerText="Nome" filterBy="#{cursor.nome}" sortBy="#{cursor.nome}">
+				<p:column headerText="Nome" filterBy="#{cursor.nome}"
+					sortBy="#{cursor.nome}">
 				#{cursor.nome}
 				</p:column>
 
@@ -43,8 +47,30 @@
 				</p:column>
 
 				<p:column headerText="Opções">
+					<p:commandButton icon="ui-icon-trash" actionListener="#{usuarioBean.excluir(cursor)}" 
+					update="mensagem formListagem:tabela" process="@this">
+						<p:confirm header="Confirmação"
+							message="Deseja excluir o usuário?" icon="ui-icon-alert" />
+						<f:attribute name="usuarioSeleciondo" value="#{cursor}" />
+					</p:commandButton>
+
+					<p:commandButton icon="ui-icon-pencil" actionListener="#{usuarioBean.editar(cursor)}"
+					update="formCadastro:painel" process="@this"
+						oncomplete="PF('dialogo').show();">
+						<f:attribute name="usuarioSeleciondo" value="#{cursor}" />
+					</p:commandButton>
+
+
 				</p:column>
 			</p:dataTable>
+			<p:confirmDialog global="true">
+				<p:commandButton value="Sim" type="button"
+					styleClass="ui-confirmdialog-yes" icon="ui-icon-check" />
+				<p:commandButton value="Não" type="button"
+					styleClass="ui-confirmdialog-no" icon="ui-icon-close" />
+			</p:confirmDialog>
+
+
 		</p:panel>
 	</h:form>
 
@@ -53,33 +79,40 @@
 		<h:form id="formCadastro">
 			<h:panelGrid id="painel">
 				<p:outputLabel value="Nome" />
-				<p:inputText maxlength="50" size="30" value="#{usuarioBean.usuario.nome}" 
-				required="true" requiredMessage="O campo nome é obrigatório" />
+				<p:inputText maxlength="50" size="30"
+					value="#{usuarioBean.usuario.nome}" required="true"
+					requiredMessage="O campo nome é obrigatório" />
 				<p:outputLabel value="cpf" />
-				<p:inputText maxlength="12" size="30" value="#{usuarioBean.usuario.cpf}"
-				 required="true" requiredMessage="O campo cpf é obrigatório" />
+				<p:inputText maxlength="12" size="30"
+					value="#{usuarioBean.usuario.cpf}" required="true"
+					requiredMessage="O campo cpf é obrigatório" />
 
 				<p:outputLabel value="Data de nascimento" for="@next" />
-				<p:calendar required="true" requiredMessage="O campo data de nascimento é obrigatório"
-				pattern="dd/MM/yyyy" value="#{usuarioBean.usuario.dataNascimento}"/>
+				<p:calendar required="true"
+					requiredMessage="O campo data de nascimento é obrigatório"
+					pattern="dd/MM/yyyy" value="#{usuarioBean.usuario.dataNascimento}" />
 
 				<p:outputLabel value="Sexo" />
-				<p:inputText maxlength="1" size="30" value="#{usuarioBean.usuario.sexo}" 
-				required="true" requiredMessage="O campo sexo é obrigatório" />
+				<p:inputText maxlength="1" size="30"
+					value="#{usuarioBean.usuario.sexo}" required="true"
+					requiredMessage="O campo sexo é obrigatório" />
 
 				<p:outputLabel value="Cargo:" />
-				<p:selectOneMenu filter="true" required="true" requiredMessage="O campo cargo é obrigatório"
-				value="#{usuarioBean.usuario.cargo}" converter="omnifaces.SelectItemsConverter">
+				<p:selectOneMenu filter="true" required="true"
+					requiredMessage="O campo cargo é obrigatório"
+					value="#{usuarioBean.usuario.cargo}"
+					converter="omnifaces.SelectItemsConverter">
 					<f:selectItem itemValue="" itemLabel="Selecione um cargo" />
 					<f:selectItems value="#{usuarioBean.cargos}" var="cargoCursor"
-					itemLabel="#{cargoCursor.nomeCargo}"/>
+						itemLabel="#{cargoCursor.nomeCargo}" />
 				</p:selectOneMenu>
 
 			</h:panelGrid>
 
 			<h:panelGrid columns="2">
-				<p:commandButton value="Salvar" actionListener="#{usuarioBean.salvar()}" 
-				update="mensagem formCadastro:painel"/>
+				<p:commandButton value="Salvar"
+					actionListener="#{usuarioBean.salvar()}"
+					update="mensagem formCadastro:painel formListagem:tabela" />
 				<p:commandButton value="Fechar" oncomplete="PF('dialogo').hide();" />
 			</h:panelGrid>
 		</h:form>
